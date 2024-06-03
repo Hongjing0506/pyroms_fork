@@ -229,22 +229,25 @@
             !***
             !*** successfully found i,j - compute weights
             !***
-
             wgts(1) = (one-iguess)*(one-jguess)
             wgts(2) = iguess*(one-jguess)
             wgts(3) = iguess*jguess
             wgts(4) = (one-iguess)*jguess
+            !print *,'     debug:iguess,jguess:',iguess,jguess
+            !print *,'     debug:print wgts:',wgts
 
 !           new treatment for the situation where one or more source points is
 !           land.  If no land points, just go on as always....
 
             if (.not. land_ho) then
+              print *,'    debug:print wgts:',wgts
               call store_link_bilin(dst_add, src_add, wgts, nmap)
 
             else
 
               icount = 0
               do n=1,4
+                print *,'     debug:mask=', (grid1_mask(src_add(n)))
                 if (grid1_mask(src_add(n))) then
                   icount = icount + 1
                 else
@@ -259,17 +262,55 @@
                 !*** renormalize weights
                 
                 sum_wgts = sum(wgts)
-                wgts(1) = wgts(1)/sum_wgts
-                wgts(2) = wgts(2)/sum_wgts
-                wgts(3) = wgts(3)/sum_wgts
-                wgts(4) = wgts(4)/sum_wgts
+                ! Hongjing in 20240421: if sum_wgts is greater than
+                ! zero, normalize it. if not, use nearest neighbor
+                ! search.
+                ! original: no if
+                if (sum_wgts .gt. 0) then
+                  print *,'    debug:before_wgts=',wgts
+                  print *,'    debug:sum_wgts=',sum_wgts
+                  wgts(1) = wgts(1)/sum_wgts
+                  wgts(2) = wgts(2)/sum_wgts
+                  wgts(3) = wgts(3)/sum_wgts
+                  wgts(4) = wgts(4)/sum_wgts
 
-                print *,'Point with source land points found'
-                print *,'Point coords: ',plat,plon
-                print *,'Number of good source points: ',icount
-                print *,'Associated weights: ',wgts
+                  print *,'Point with source land points found'
+                  print *,'Point coords: ',plat,plon
+                  print *,'Number of good source points: ',icount
+                  print *,'Associated weights: ',wgts
 
-                call store_link_bilin(dst_add, src_add, wgts, nmap)
+                  call store_link_bilin(dst_add, src_add, wgts, nmap)
+                else
+                  print *,'sum_wgts equals to zero'
+                  print *,'Attempting nearest neighbor search'
+                  coslat_dst = cos(grid2_center_lat(dst_add))
+                  coslon_dst = cos(grid2_center_lon(dst_add))
+                  sinlat_dst = sin(grid2_center_lat(dst_add))
+                  sinlon_dst = sin(grid2_center_lon(dst_add))
+                  call grid_search_nbr(src_add, wgts, plat, plon,
+     &                 coslat_dst, coslon_dst, sinlat_dst, sinlon_dst,
+     &                 bin_addr1, bin_addr2, check_mask=.true.)
+
+                  !*** compute weights based on inverse distance
+
+                  if (wgts(1).gt.zero) wgts(1) = one/wgts(1)
+                  if (wgts(2).gt.zero) wgts(2) = one/wgts(2)
+                  if (wgts(3).gt.zero) wgts(3) = one/wgts(3)
+                  if (wgts(4).gt.zero) wgts(4) = one/wgts(4)
+
+                  !*** normalize weights and store the link
+
+                  sum_wgts = sum(wgts)
+                  wgts(1) = wgts(1)/sum_wgts
+                  wgts(2) = wgts(2)/sum_wgts
+                  wgts(3) = wgts(3)/sum_wgts
+                  wgts(4) = wgts(4)/sum_wgts
+
+                  print *,'Point coords: ',plat,plon
+                  print *,'Associated weights: ',wgts
+
+                  call store_link_bilin(dst_add, src_add, wgts, nmap)
+                endif
               else
                 print *,'Unmasked dst pt surrounded by masked src pts'
                 print *,'Attempting nearest neighbor search'

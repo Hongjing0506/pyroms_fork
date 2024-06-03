@@ -5,7 +5,7 @@ from mpl_toolkits.basemap import pyproj
 from pyroms_toolbox.Grid_HYCOM import Grid_HYCOM
 
 
-def get_nc_Grid_HYCOM2(grdfile, name='GLBv0.08_Arctic4'):
+def get_nc_Grid_HYCOM2(grdfile, name='GLBv0.08_Arctic4', xrange=(60,175), yrange=(120, 190)):
 
     """
     grd = get_nc_Grid_HYCOM2(grdfile)
@@ -58,4 +58,4 @@ def get_nc_Grid_HYCOM2(grdfile, name='GLBv0.08_Arctic4'):
 #   angle = 0.5 * (az_forward[1:,:] + az_forward[:-1,:])
 #   angle = (90 - angle) * np.pi/180.
 
-    return Grid_HYCOM(lon_t, lat_t, lon_vert, lat_vert, mask_t, z_t, h, angle, name)
+    return Grid_HYCOM(lon_t, lat_t, lon_vert, lat_vert, mask_t, z_t, h, angle, name, xrange, yrange)

@@ -26,6 +26,11 @@ def nc_create_roms_bdry_file(filename, grd, ocean_time):
     nc.createDimension('s_rho', grd.vgrid.N)
     nc.createDimension('s_w', grd.vgrid.Np)
     nc.createDimension('ocean_time', None)
+    # nc.createDimension('zeta_time', 1)
+    # nc.createDimension('salt_time', 1)
+    # nc.createDimension('temp_time', 1)
+    # nc.createDimension('v2d_time', 1)
+    # nc.createDimension('v3d_time', 1)
 
     # write time and grid information
     nc.createVariable('theta_s', 'f8', ())
@@ -89,5 +94,50 @@ def nc_create_roms_bdry_file(filename, grd, ocean_time):
         nc.variables['ocean_time'].field = ocean_time.field
     except:
         nc.variables['ocean_time'].field = ' '
+
+    # debug: modified by Hongjing Chen in 2024/04/06
+    # added the zeta_time, salt_time, temp_time, v2d_time and v3d_time coordinates in bdry nc file.
+    # debug start ======================================
+    # nc.createVariable('zeta_time', 'f8', ('zeta_time'))
+    # nc.variables['zeta_time'].long_name = ocean_time.long_name
+    # nc.variables['zeta_time'].units = ocean_time.units
+    # try:
+    #     nc.variables['zeta_time'].field = ocean_time.field
+    # except:
+    #     nc.variables['zeta_time'].field = ' '
+        
+    # nc.createVariable('salt_time', 'f8', ('salt_time'))
+    # nc.variables['salt_time'].long_name = ocean_time.long_name
+    # nc.variables['salt_time'].units = ocean_time.units
+    # try:
+    #     nc.variables['salt_time'].field = ocean_time.field
+    # except:
+    #     nc.variables['salt_time'].field = ' '
+
+    # nc.createVariable('temp_time', 'f8', ('temp_time'))
+    # nc.variables['temp_time'].long_name = ocean_time.long_name
+    # nc.variables['temp_time'].units = ocean_time.units
+    # try:
+    #     nc.variables['temp_time'].field = ocean_time.field
+    # except:
+    #     nc.variables['temp_time'].field = ' '
+
+    # nc.createVariable('v2d_time', 'f8', ('v2d_time'))
+    # nc.variables['v2d_time'].long_name = ocean_time.long_name
+    # nc.variables['v2d_time'].units = ocean_time.units
+    # try:
+    #     nc.variables['v2d_time'].field = ocean_time.field
+    # except:
+    #     nc.variables['v2d_time'].field = ' '
+
+    # nc.createVariable('v3d_time', 'f8', ('v3d_time'))
+    # nc.variables['v3d_time'].long_name = ocean_time.long_name
+    # nc.variables['v3d_time'].units = ocean_time.units
+    # try:
+    #     nc.variables['v3d_time'].field = ocean_time.field
+    # except:
+    #     nc.variables['v3d_time'].field = ' '
+    
+    # debug end =========================================
 
     nc.close()

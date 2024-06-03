@@ -1592,7 +1592,7 @@
         add1_tmp = add1(lvl)
         add2_tmp = add2(lvl)
         wgttmp(:) = weights(:,lvl)
-
+        !print *,'debug:wgttmp(:):',wgttmp
         !***
         !*** loop until proper level is found for this link, or reach
         !*** bottom
@@ -1751,7 +1751,8 @@
       wgttmp (:)   = weights(:,2)
       weights(:,2) = weights(:,1)
       weights(:,1) = wgttmp (:)
-
+      !print *,'    debug:weights(:,1):',weights(:,1)
+      !print *,'    debug:weights(:,2):',weights(:,2)
 !-----------------------------------------------------------------------
 
       end subroutine sort_add

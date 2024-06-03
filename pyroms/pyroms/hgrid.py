@@ -1044,7 +1044,11 @@ class Gridgen(CGrid):
 
         #self._libgridgen = np.ctypeslib.load_library('libgridgen',__file__)
         self._libgridgen = np.ctypeslib.load_library('libgridgen', pyroms.__path__[0])
-
+        
+        # modified by Hongjing in 03/30/2024:
+        # self._libgridgen = np.ctypeslib.load_library('libgridgen', '/home/ys17-23/.conda/envs/roms/lib')
+        # modified finished
+        
         # In MacOSX, use of c_void_p does not return proper structure.
         # (An integer address is returned and subsequent use results in a
         #   Segmentation Fault)
