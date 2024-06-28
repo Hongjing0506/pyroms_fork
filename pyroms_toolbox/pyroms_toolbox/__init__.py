@@ -69,6 +69,7 @@ from .shift_SODA_data import shift_SODA_data
 from . import Grid_HYCOM
 from . import CGrid_GLORYS
 from . import Grid_GLORYS
+from . import Grid_CMEMS
 from .mld_from_temp import mld_from_temp
 from .mld_from_dens import mld_from_dens
 from .ocean_in import ocean_in
