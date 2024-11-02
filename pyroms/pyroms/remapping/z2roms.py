@@ -40,8 +40,8 @@ def z2roms(varz, grdz, grd, Cpos='rho', irange=None, jrange=None, \
         raise Warning('%s not supported, defaulting to linear' % mode)
 
     if Cpos == 'rho':
-        z = grdz.vgrid.z[:]
-        depth = grd.vgrid.z_r[0,:]
+        z = grdz.vgrid.z[:]         # z information of datasets (src_grd)
+        depth = grd.vgrid.z_r[0,:]  # z information at rho points of ROMS grid (dst_grd)
         mask = grd.hgrid.mask_rho
     elif Cpos == 'u':
         z = 0.5 * (grdz.vgrid.z[:,:,:-1] + grdz.vgrid.z[:,:,1:])
@@ -80,7 +80,7 @@ def z2roms(varz, grdz, grd, Cpos='rho', irange=None, jrange=None, \
                  irange=irange, jrange=jrange, spval=spval, \
                  dmax=dmax, cdepth=cdepth, kk=kk)
 
-    varz = np.concatenate((varz[0:1,:,:], varz, varz[-1:,:,:]), 0)
+    varz = np.concatenate((varz[0:1,:,:], varz, varz[-1:,:,:]), 0) # copy the bottom and surface layer and set their depth to -9999 and 100, respectively. This is to avoid interpolation errors at the boundaries.
     z = np.concatenate((-9999*np.ones((1,z.shape[1], z.shape[2])), \
            z, \
            100*np.ones((1,z.shape[1], z.shape[2]))), 0)
