@@ -1,3 +1,11 @@
+r'''
+Author: ChenHJ
+Date: 2024-10-31 18:04:50
+LastEditors: ChenHJ
+LastEditTime: 2024-10-31 18:04:51
+FilePath: /roms_offline/share/home/dq130/mylib/pyroms/pyroms_toolbox/pyroms_toolbox/Grid_HYCOM/get_nc_Grid_HYCOM2.py
+Description: 
+'''
 import numpy as np
 import pyroms
 import netCDF4
@@ -16,9 +24,9 @@ def get_nc_Grid_HYCOM2(grdfile, name='GLBv0.08_Arctic4', xrange=(60,175), yrange
     nc = netCDF4.Dataset(grdfile)
     lon = nc.variables['lon'][:]
     lat = nc.variables['lat'][:]
-    depth = nc.variables['z'][:]
-    ssh = nc.variables['ssh'][0,:,:]
-    var = nc.variables['temp'][0,:,:,:]
+    depth = nc.variables['depth'][:]
+    ssh = nc.variables['surf_el'][0,:,:]
+    var = nc.variables['water_temp'][0,:,:,:]
     nc.close()
 
     lon_t, lat_t = np.meshgrid(lon, lat)
